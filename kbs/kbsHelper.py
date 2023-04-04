@@ -68,7 +68,7 @@ async def query_kbs(queries):
     else:
         print("use kbs ds")
         results = await kbs_ds.query(
-            queries,
+            queries["queries"],
         )
         if isinstance(results, str):
             results = json.loads(results)
