@@ -26,6 +26,7 @@ def send_request(url, token, queries):
 def process_response(response):
     response_data = response.json()
     new_results = []
+    print(f"original kbs response {response_data}")
     for result in response_data["results"]:
         query = result["query"]
         max_score_result = max(result["results"], key=lambda x: x["score"])

@@ -63,6 +63,7 @@ def chat_with_gpt(message_log, user_input, kbs_queries):
     if len(kbs_queries) > 0:
         print(f"use kbs queries {kbs_queries}")
         query_response = kbsHelper.query_kbs(json.loads(kbs_queries))
+        print(f"get kbs response {query_response}")
         query_response_json = json.loads(query_response)
         if len(query_response_json["results"]) > 0:
             user_input = user_input + "\n\n 你需要基于以下的知识来回答用户的问题: " + query_response
