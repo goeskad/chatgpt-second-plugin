@@ -2,6 +2,7 @@ import os
 import requests
 import json
 from models.api import QueryRequest, QueryResponse
+from models.models import QueryResult, DocumentChunkWithScore
 
 
 kbs_host = "https://lobster-app-r4gai.ondigitalocean.app"
@@ -49,6 +50,27 @@ def process_response(response_data):
     return output_json
 
 
+def process_ds_response(ds_response):
+    new_results = []
+    for result in ds_response:
+        query = result.query
+        max_score_result = max(result.results, key=lambda x: x.score)
+
+        if max_score_result.score > 0.8:
+            new_result = {
+                "query": query,
+                "result": max_score_result.text
+            }
+            new_results.append(new_result)
+
+    # 将处理后的结果输出为JSON格式
+    output_data = {"results": new_results}
+    output_json = json.dumps(output_data, ensure_ascii=False, indent=4)
+
+    print(f"check kbs ds reponse {output_json}")
+    return output_json
+
+
 def upsert_kbs(documents):
     documents_payload = {"documents": documents}
     response = send_request(upsert_url, kbs_token, documents_payload)
@@ -73,6 +95,5 @@ async def query_kbs(queries):
         results = await kbs_ds.query(
             query_request.queries
         )
-        print(f"kbs response {results}")
-        query_response = QueryResponse(results=results)
-        return process_response(query_response.json(encodings="utf-8"))
+
+        return process_ds_response(results)
