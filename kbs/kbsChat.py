@@ -1,5 +1,5 @@
-import kbsHelper
-import gptAPIs
+from kbs import kbsHelper
+from kbs import gptAPIs
 import json
 
 

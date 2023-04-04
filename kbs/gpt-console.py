@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import kbsChat
+from kbs import kbsChat
 import json
 
 # Main function that runs the chatbot
