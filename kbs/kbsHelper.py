@@ -73,8 +73,6 @@ async def query_kbs(queries):
         results = await kbs_ds.query(
             query_request.queries
         )
-        if isinstance(results, str):
-            results = json.loads(results)
-            print("kbs ds return str")
+        print(f"kbs response {results}")
         query_response = QueryResponse(results=results)
-        return process_response(query_response.json())
+        return process_response(query_response.json(encodings="utf-8"))
