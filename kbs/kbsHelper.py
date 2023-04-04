@@ -1,6 +1,8 @@
 import os
 import requests
 import json
+from models.api import QueryRequest
+
 
 kbs_host = "https://lobster-app-r4gai.ondigitalocean.app"
 upsert_url = kbs_host + "/upsert"
@@ -67,11 +69,9 @@ async def query_kbs(queries):
             return f"Error: {response.status_code}"
     else:
         print("use kbs ds")
-        query_list = queries["queries"]
-        if not isinstance(query_list, list):
-            print(f"kbs queries is {type(query_list)}")
+        query_request = QueryRequest(**queries)
         results = await kbs_ds.query(
-            query_list
+            query_request.queries
         )
         if isinstance(results, str):
             results = json.loads(results)
