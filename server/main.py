@@ -11,9 +11,12 @@ from models.api import (
     QueryResponse,
     UpsertRequest,
     UpsertResponse,
+    KBSInput,
+    MessageInput
 )
 from datastore.factory import get_datastore
 from services.file import get_document_from_file
+from kbs import kbsChat
 
 
 app = FastAPI()
@@ -134,6 +137,29 @@ async def delete(
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail="Internal Service Error")
+
+
+@app.post("/getKbsQuestions")
+async def kbs_endpoint(input: KBSInput):
+    user_input = input.text
+
+    kbs_queries = kbsChat.generate_kbs_queries(user_input)
+    return kbs_queries
+
+
+@app.post("/chat")
+async def chat_endpoint(input: MessageInput):
+    user_input = input.text
+    kbs_queries = input.kbsQueries
+
+    init_promote = "你将担任某个软件系统的客服助理。用户会问你一些使用此软件系统时遇到的问题。用户给你的提问中将包含一些关于此系统的知识，你需要根据这些知识来回答用户的提问。"
+    message_log = [
+        {"role": "system", "content": init_promote}
+    ]
+
+    response = kbsChat.chat_with_gpt(message_log, user_input, kbs_queries)
+
+    return response
 
 
 @app.on_event("startup")

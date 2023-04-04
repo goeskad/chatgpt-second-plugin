@@ -33,3 +33,12 @@ class DeleteRequest(BaseModel):
 
 class DeleteResponse(BaseModel):
     success: bool
+
+
+class KBSInput(BaseModel):
+    text: str
+
+
+class MessageInput(BaseModel):
+    text: str
+    kbsQueries: str
