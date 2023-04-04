@@ -59,10 +59,10 @@ def format_kbs_queries(queries):
     return format_text
 
 
-def chat_with_gpt(message_log, user_input, kbs_queries):
+async def chat_with_gpt(message_log, user_input, kbs_queries):
     if len(kbs_queries) > 0:
         print(f"use kbs queries {kbs_queries}")
-        query_response = kbsHelper.query_kbs(json.loads(kbs_queries))
+        query_response = await kbsHelper.query_kbs(json.loads(kbs_queries))
         print(f"get kbs response {query_response}")
         query_response_json = json.loads(query_response)
         if len(query_response_json["results"]) > 0:

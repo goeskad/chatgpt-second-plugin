@@ -12,7 +12,10 @@ system_init_promote = "你将担任某个软件系统的客服助理。用户会
 init_message = {"role": "system", "content": system_init_promote}
 
 
-def send_request(url, token, queries):
+kbs_ds = None
+
+
+async def send_request(url, token, queries):
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json; charset=utf-8"
@@ -23,8 +26,7 @@ def send_request(url, token, queries):
     return response
 
 
-def process_response(response):
-    response_data = response.json()
+def process_response(response_data):
     new_results = []
     print(f"original kbs response {response_data}")
     for result in response_data["results"]:
@@ -55,10 +57,20 @@ def upsert_kbs(documents):
         return f"Error: {response.status_code}"
 
 
-def query_kbs(queries):
-    response = send_request(query_url, kbs_token, queries)
+async def query_kbs(queries):
+    if kbs_ds is None:
+        response = await send_request(query_url, kbs_token, queries)
 
-    if response.status_code == 200:
-        return process_response(response)
+        if response.status_code == 200:
+            return process_response(response.json())
+        else:
+            return f"Error: {response.status_code}"
     else:
-        return f"Error: {response.status_code}"
+        print("use kbs ds")
+        results = await kbs_ds.query(
+            queries,
+        )
+        if isinstance(results, str):
+            results = json.loads(results)
+            print("kbs ds return str")
+        return process_response({results})

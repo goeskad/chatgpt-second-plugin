@@ -17,6 +17,7 @@ from models.api import (
 from datastore.factory import get_datastore
 from services.file import get_document_from_file
 from kbs import kbsChat
+from kbs import kbsHelper
 
 
 app = FastAPI()
@@ -157,7 +158,7 @@ async def chat_endpoint(input: MessageInput):
         {"role": "system", "content": init_promote}
     ]
 
-    response = kbsChat.chat_with_gpt(message_log, user_input, kbs_queries)
+    response = await kbsChat.chat_with_gpt(message_log, user_input, kbs_queries)
 
     return response
 
@@ -166,6 +167,7 @@ async def chat_endpoint(input: MessageInput):
 async def startup():
     global datastore
     datastore = await get_datastore()
+    kbsHelper.kbs_ds = datastore
 
 
 def start():
