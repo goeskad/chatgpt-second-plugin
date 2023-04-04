@@ -67,8 +67,11 @@ async def query_kbs(queries):
             return f"Error: {response.status_code}"
     else:
         print("use kbs ds")
+        query_list = queries["queries"]
+        if not isinstance(query_list, list):
+            print(f"kbs queries is {type(query_list)}")
         results = await kbs_ds.query(
-            queries["queries"],
+            query_list
         )
         if isinstance(results, str):
             results = json.loads(results)
