@@ -1,7 +1,7 @@
 import os
 import requests
 import json
-from models.api import QueryRequest
+from models.api import QueryRequest, QueryResponse
 
 
 kbs_host = "https://lobster-app-r4gai.ondigitalocean.app"
@@ -76,4 +76,5 @@ async def query_kbs(queries):
         if isinstance(results, str):
             results = json.loads(results)
             print("kbs ds return str")
-        return process_response({results})
+        query_response = QueryResponse(results=results)
+        return process_response(query_response.json())
