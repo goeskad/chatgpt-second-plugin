@@ -14,7 +14,10 @@ def parse_kbs_queries(response):
         if "query" in json_obj:
             results.append(json_obj)
 
-    return json.dumps(combined_queries, ensure_ascii=False)
+    if len(results) > 0:
+        return json.dumps(combined_queries, ensure_ascii=False)
+    else:
+        return ""
 
 
 def generate_kbs_queries(user_input):
