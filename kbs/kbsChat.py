@@ -1,23 +1,20 @@
 from kbs import kbsHelper
 from kbs import gptAPIs
 import json
+import re
 
 
 def parse_kbs_queries(response):
     # print(f"Find response: {response}")
-    json_text = ""
-    start = response.find('{"queries')
-    if start >= 0:
-        json_text = response[start:]
-        # 找到JSON内容的结束位置
-        end = json_text.rfind(']}')
-        if end > 0:
-            # 保留JSON内容，去掉结束标记之后的部分
-            json_text = json_text[:end+2]
-            # print(f"Find queries: {json_text}")
-            # queries = json.loads(json_text)
+    json_strings = re.findall(r'\{[^{}]*\}', response)
+    results = []
+    combined_queries = {"queries": results}
+    for json_string in json_strings:
+        json_obj = json.loads(json_string)
+        if "query" in json_obj:
+            results.append(json_obj)
 
-    return json_text
+    return json.dumps(combined_queries, ensure_ascii=False)
 
 
 def generate_kbs_queries(user_input):
