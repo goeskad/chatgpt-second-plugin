@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
-from kbs import kbsChat
-import json
+from kbs import kbsChat, kbsHelper
+import asyncio
+# from datastore.factory import get_datastore
+
 
 # Main function that runs the chatbot
-def main():
+# async def init():
+#     global datastore
+#     datastore = await get_datastore()
+#     kbsHelper.kbs_ds = datastore
+
+
+async def main():
+    # init()
     init_promote = "你将担任某个软件系统的客服助理。用户会问你一些使用此软件系统时遇到的问题。用户给你的提问中将包含一些关于此系统的知识，你需要根据这些知识来回答用户的提问。"
     message_log = [
         {"role": "system", "content": init_promote}
@@ -27,7 +36,7 @@ def main():
             formatted_kbs_queries = kbsChat.format_kbs_queries(kbs_queries)
             print(f"AI assistant: 将为您从知识库中查询以下问题: \n{formatted_kbs_queries}请稍后")
 
-            response = kbsChat.chat_with_gpt(message_log, user_input, kbs_queries)
+            response = await kbsChat.chat_with_gpt(message_log, user_input, kbs_queries)
 
             # Add the chatbot's response to the conversation history and print it to the console
             message_log.append({"role": "assistant", "content": response})
@@ -37,4 +46,4 @@ def main():
 
 # Call the main function if this file is executed directly (not imported as a module)
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
